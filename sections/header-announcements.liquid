@@ -10,219 +10,248 @@
 
 {% render 'contrast-override', background_color: section.settings.background_color, section_id: section.id %}
 
-<div class="section-background color-custom-{{ section.id }}"></div>
-<aside
-  class="announcement-bar spacing-style section section--{{ section.settings.section_width }} color-custom-{{ section.id }}"
-  style="{% render 'spacing-padding', settings: section.settings %}; --border-bottom-width: {{ section.settings.divider_width }}px;{% if section.settings.divider_color != blank %} --color-border: {{ section.settings.divider_color }};{% endif %}"
->
-  {% liquid
-    assign autoplay = false
-    assign show_arrows = false
-    if section.blocks.size > 1
-      assign autoplay = true
-      assign show_arrows = true
-    endif
-  %}
-
-  <announcement-bar-component
-    class="announcement-bar__slider"
-    {% if autoplay == true %}
-      autoplay="{{ section.settings.speed }}" aria-live="polite"
-    {% endif %}
-  >
-    {% if show_arrows %}
-      {% render 'slideshow-arrows', icon_style: 'chevron' %}
-    {% endif %}
-
-    <div class="announcement-bar__slides">
-      {% content_for 'blocks' %}
-    </div>
-  </announcement-bar-component>
-</aside>
-
-{% stylesheet %}
-  .announcement-bar {
-    border-block-end: var(--border-bottom-width) solid var(--color-border);
+<style>
+  #tisso-topbar-{{ section.id }} {
+    background: {{ section.settings.bg_color }};
+    border-bottom: {{ section.settings.border_width }}px solid {{ section.settings.border_color }};
   }
 
-  .announcement-bar__slider {
+  #tisso-topbar-{{ section.id }} .tb__inner {
+    max-width: var(--page-width, 1200px);
+    margin: 0 auto;
+    padding: 0 20px;
     display: flex;
-    flex-direction: row;
     align-items: center;
-    position: relative;
-
-    @media screen and (max-width: 749px) {
-      grid-column: 1 / -1;
-    }
+    justify-content: space-between;
+    min-height: {{ section.settings.height }}px;
+    gap: 16px;
   }
 
-  .announcement-bar__slides {
-    display: grid;
-    grid: [stack] auto / [stack] auto;
-    width: calc(100% - var(--button-size) * 2);
-    max-width: 680px;
-    margin-inline: auto;
-  }
-
-  .announcement-bar__slides > * {
-    grid-area: stack;
-  }
-
-  .announcement-bar__slide {
-    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
-    content-visibility: visible;
-
-    &[aria-hidden='true'] {
-      opacity: 0;
-      visibility: hidden;
-    }
-  }
-
-  .announcement-bar__slider slideshow-arrows {
-    padding: 0;
-    mix-blend-mode: normal;
-  }
-
-  .announcement-bar__slider slideshow-arrows .slideshow-control {
-    color: var(--color-foreground);
-  }
-
-  .announcement-bar__slider .slideshow-control {
-    display: flex;
-    padding: 0;
-    width: var(--button-size);
-    height: var(--button-size);
-    align-items: center;
-    justify-content: center;
-    opacity: 1;
-    animation: none;
-
-    @media screen and (min-width: 750px) {
-      --slideshow-control-offset: calc((var(--button-size) - var(--icon-size-xs)) / 2);
-
-      .section--page-width &.slideshow-control--previous {
-        transform: translateX(var(--slideshow-control-offset));
-      }
-    }
-  }
-
-  .announcement-bar__slider .slideshow-control .svg-wrapper {
-    width: var(--icon-size-xs);
-    height: var(--icon-size-xs);
-  }
-
-  .announcement-bar__slide {
-    place-content: center;
-  }
-
-  .announcement-bar__text:first-child {
+  /* LEFT — Logo text */
+  #tisso-topbar-{{ section.id }} .tb__logo {
+    font-size: {{ section.settings.logo_size }}px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: {{ section.settings.text_color }};
     margin: 0;
+    flex-shrink: 0;
+    line-height: 1;
+    font-family: inherit;
   }
 
-  .announcement-bar__link {
-    position: absolute;
-    inset: 0;
+  /* CENTER — Message */
+  #tisso-topbar-{{ section.id }} .tb__message {
+    font-size: {{ section.settings.message_size }}px;
+    font-weight: 400;
+    color: {{ section.settings.text_color }};
+    margin: 0;
+    text-align: center;
+    flex: 1;
+    line-height: 1.4;
+    font-family: inherit;
   }
-{% endstylesheet %}
+
+  /* RIGHT — CTA Button */
+  #tisso-topbar-{{ section.id }} .tb__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 22px;
+    height: 40px;
+    background: {{ section.settings.btn_bg }};
+    color: {{ section.settings.btn_text_color }};
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+
+  #tisso-topbar-{{ section.id }} .tb__btn:hover {
+    opacity: 0.9;
+    transform: translateX(2px);
+  }
+
+  #tisso-topbar-{{ section.id }} .tb__btn svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  /* ── Mobile ── */
+  @media screen and (max-width: 749px) {
+    #tisso-topbar-{{ section.id }} .tb__inner {
+      flex-wrap: wrap;
+      justify-content: center;
+      padding-top: 12px;
+      padding-bottom: 12px;
+      gap: 10px;
+    }
+
+    #tisso-topbar-{{ section.id }} .tb__logo,
+    #tisso-topbar-{{ section.id }} .tb__message {
+      flex: 1 1 100%;
+      text-align: center;
+    }
+
+    #tisso-topbar-{{ section.id }} .tb__btn {
+      width: 100%;
+      justify-content: center;
+      margin-top: 4px;
+    }
+  }
+</style>
+
+<div id="tisso-topbar-{{ section.id }}">
+  <div class="tb__inner">
+    {%- if section.settings.logo_text != blank -%}
+      <p class="tb__logo">{{ section.settings.logo_text }}</p>
+    {%- endif -%}
+
+    {%- if section.settings.message != blank -%}
+      <p class="tb__message">{{ section.settings.message }}</p>
+    {%- endif -%}
+
+    {%- if section.settings.btn_text != blank and section.settings.btn_link != blank -%}
+      <a href="{{ section.settings.btn_link }}" class="tb__btn">
+        <span>{{ section.settings.btn_text }}</span>
+        <svg viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 1L17 6M17 6L12 11M17 6H1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    {%- endif -%}
+  </div>
+</div>
 
 {% schema %}
 {
-  "name": "t:names.announcement_bar",
-  "blocks": [
-    {
-      "type": "_announcement"
-    }
-  ],
+  "name": "Announcement Bar",
+  "tag": "section",
+  "class": "section",
   "enabled_on": {
     "groups": ["header"]
   },
   "settings": [
     {
+      "type": "header",
+      "content": "Left — Logo / Brand"
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo text",
+      "default": "TISSO VISON"
+    },
+    {
       "type": "range",
-      "id": "speed",
-      "label": "t:settings.scroll_speed",
-      "min": 2,
-      "max": 10,
-      "default": 5,
-      "unit": "sec"
+      "id": "logo_size",
+      "label": "Logo font size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
     },
     {
       "type": "header",
-      "content": "t:content.appearance"
+      "content": "Center — Message"
     },
     {
-      "type": "select",
-      "id": "section_width",
-      "label": "t:settings.section_width",
-      "options": [
-        {
-          "value": "page-width",
-          "label": "t:options.page"
-        },
-        {
-          "value": "full-width",
-          "label": "t:options.full"
-        }
-      ],
-      "default": "page-width"
-    },
-    {
-      "type": "color",
-      "id": "background_color",
-      "label": "t:settings.background_color",
-      "placeholder": "t:settings.default"
+      "type": "text",
+      "id": "message",
+      "label": "Message",
+      "default": "Find the ideal gift for your loved ones."
     },
     {
       "type": "range",
-      "id": "divider_width",
-      "label": "t:settings.divider_thickness",
+      "id": "message_size",
+      "label": "Message font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Right — Button"
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "label": "Button text",
+      "default": "CHOOSE GIFT"
+    },
+    {
+      "type": "url",
+      "id": "btn_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg",
+      "label": "Button background",
+      "default": "#FFEB3B"
+    },
+    {
+      "type": "color",
+      "id": "btn_text_color",
+      "label": "Button text color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Bar background",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Bottom border color",
+      "default": "#E0E0E0"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Bottom border width",
       "min": 0,
-      "max": 5,
-      "step": 0.5,
+      "max": 3,
+      "step": 1,
       "unit": "px",
       "default": 0
     },
     {
-      "type": "color",
-      "id": "divider_color",
-      "label": "t:settings.divider_color",
-      "placeholder": "t:settings.default",
-      "visible_if": "{{ section.settings.divider_width > 0 }}"
-    },
-    {
-      "type": "header",
-      "content": "t:content.padding"
-    },
-    {
       "type": "range",
-      "id": "padding-block-start",
-      "label": "t:settings.top",
-      "min": 0,
-      "max": 100,
-      "step": 1,
+      "id": "height",
+      "label": "Bar height",
+      "min": 36,
+      "max": 80,
+      "step": 2,
       "unit": "px",
-      "default": 15
-    },
-    {
-      "type": "range",
-      "id": "padding-block-end",
-      "label": "t:settings.bottom",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 15
+      "default": 52
     }
   ],
   "presets": [
     {
-      "name": "t:names.announcement_bar",
-      "blocks": {
-        "announcement_1": {
-          "type": "_announcement"
-        }
-      },
-      "block_order": ["announcement_1"]
+      "name": "Announcement Bar"
     }
   ]
 }
