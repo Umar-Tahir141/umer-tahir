@@ -25,7 +25,7 @@
   #tisso-vision-{{ section.id }} .tv__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 4px;
   }
   #tisso-vision-{{ section.id }} .tv__item {
     position: relative;
@@ -181,11 +181,16 @@
     margin: 0;
   }
 
-  /* Variant picker container */
+  /* Variant rows */
   #tisso-popup-{{ section.id }} .tv__popup-variants {
     margin-bottom: 4px;
   }
-  #tisso-popup-{{ section.id }} .tv__popup-variants label,
+  #tisso-popup-{{ section.id }} .tv__variant-row {
+    margin-bottom: 16px;
+  }
+  #tisso-popup-{{ section.id }} .tv__variant-row:last-child {
+    margin-bottom: 0;
+  }
   #tisso-popup-{{ section.id }} .tv__variant-label {
     display: block;
     font-size: 13px;
@@ -194,12 +199,11 @@
     font-weight: 400;
   }
 
-  /* ── Normalize theme variant picker to match reference ── */
-  /* Color / option buttons */
-  #tisso-popup-{{ section.id }} .tv__popup-variants .variant-button,
-  #tisso-popup-{{ section.id }} .tv__popup-variants button[type="button"],
-  #tisso-popup-{{ section.id }} .tv__popup-variants .swatch-button,
-  #tisso-popup-{{ section.id }} .tv__popup-variants .option-button {
+  /* Color toggle buttons */
+  #tisso-popup-{{ section.id }} .tv__color-options {
+    display: flex;
+  }
+  #tisso-popup-{{ section.id }} .tv__color-btn {
     flex: 1;
     height: 42px;
     border: 1px solid #e0e0e0;
@@ -213,37 +217,28 @@
     justify-content: center;
     transition: all 0.2s;
     position: relative;
-    margin: 0;
+    margin: 0 0 0 -1px;
     border-radius: 0;
     padding: 0 8px;
   }
-  #tisso-popup-{{ section.id }} .tv__popup-variants .variant-button.is-selected,
-  #tisso-popup-{{ section.id }} .tv__popup-variants .variant-button.active,
-  #tisso-popup-{{ section.id }} .tv__popup-variants button[type="button"].is-selected,
-  #tisso-popup-{{ section.id }} .tv__popup-variants .swatch-button.is-selected,
-  #tisso-popup-{{ section.id }} .tv__popup-variants .option-button.is-selected {
+  #tisso-popup-{{ section.id }} .tv__color-btn:first-child {
+    margin-left: 0;
+  }
+  #tisso-popup-{{ section.id }} .tv__color-btn.is-selected {
     border-left: 3px solid #1a3c8e;
     border-color: #111111;
     z-index: 1;
     font-weight: 500;
   }
-  #tisso-popup-{{ section.id }} .tv__popup-variants .variant-button:hover,
-  #tisso-popup-{{ section.id }} .tv__popup-variants button[type="button"]:hover {
+  #tisso-popup-{{ section.id }} .tv__color-btn:hover {
     border-color: #111111;
     z-index: 2;
   }
 
-  /* Button groups (color toggles) */
-  #tisso-popup-{{ section.id }} .tv__popup-variants .variant-buttons,
-  #tisso-popup-{{ section.id }} .tv__popup-variants .button-group,
-  #tisso-popup-{{ section.id }} .tv__popup-variants .swatch-group {
-    display: flex;
-    gap: 0;
-    margin-bottom: 16px;
+  /* Size dropdown */
+  #tisso-popup-{{ section.id }} .tv__size-select-wrap {
+    position: relative;
   }
-
-  /* Dropdowns */
-  #tisso-popup-{{ section.id }} .tv__popup-variants select,
   #tisso-popup-{{ section.id }} .tv__size-select {
     width: 100%;
     height: 44px;
@@ -257,19 +252,12 @@
     cursor: pointer;
     font-family: inherit;
     border-radius: 0;
-    margin-bottom: 16px;
   }
-  #tisso-popup-{{ section.id }} .tv__popup-variants select:focus,
   #tisso-popup-{{ section.id }} .tv__size-select:focus {
     outline: none;
     border-color: #111111;
   }
-  #tisso-popup-{{ section.id }} .tv__size-select-wrap,
-  #tisso-popup-{{ section.id }} .tv__popup-variants .select-wrapper {
-    position: relative;
-  }
-  #tisso-popup-{{ section.id }} .tv__size-arrow,
-  #tisso-popup-{{ section.id }} .tv__popup-variants .select-arrow {
+  #tisso-popup-{{ section.id }} .tv__size-arrow {
     position: absolute;
     right: 12px;
     top: 50%;
@@ -332,7 +320,7 @@
     #tisso-vision-{{ section.id }} .tv__grid {
       display: grid !important;
       grid-template-columns: repeat(2, 1fr) !important;
-      gap: 10px !important;
+      gap: 3px !important;
     }
     #tisso-vision-{{ section.id }} .tv__item {
       aspect-ratio: 170 / 186 !important;
@@ -410,7 +398,7 @@
           {%- comment -%}
             ═══════════════════════════════════════════════════════
             HIDDEN POPUP TEMPLATE — rendered once per product
-            Uses your theme's variant-main-picker snippet
+            Native Liquid variant picker (no external snippets)
             ═══════════════════════════════════════════════════════
           {%- endcomment -%}
           <template id="tv-popup-template-{{ product.handle }}">
@@ -437,9 +425,47 @@
               </div>
             </div>
 
-            <div class="tv__popup-variants">
-              {% render 'variant-main-picker', product_resource: product, section: section, product: product %}
-            </div>
+            {%- unless product.has_only_default_variant -%}
+              <div class="tv__popup-variants">
+                {%- for option in product.options_with_values -%}
+                  {%- unless option.name == 'Title' -%}
+                    <div class="tv__variant-row" data-option-index="{{ forloop.index0 }}">
+                      <span class="tv__variant-label">{{ option.name | escape }}</span>
+
+                      {%- assign opt_name_down = option.name | downcase -%}
+                      {%- if opt_name_down contains 'color' or opt_name_down contains 'colour' -%}
+                        {%- comment -%} COLOR: button toggle {%- endcomment -%}
+                        <div class="tv__color-options">
+                          {%- for value in option.values -%}
+                            <button
+                              type="button"
+                              class="tv__color-btn {%- if forloop.first -%} is-selected{%- endif -%}"
+                              data-value="{{ value | escape }}"
+                              aria-label="{{ option.name | escape }}: {{ value | escape }}"
+                            >
+                              {{ value | escape }}
+                            </button>
+                          {%- endfor -%}
+                        </div>
+                      {%- else -%}
+                        {%- comment -%} SIZE / OTHER: dropdown {%- endcomment -%}
+                        <div class="tv__size-select-wrap">
+                          <select class="tv__size-select" data-option-name="{{ option.name | escape }}">
+                            <option value="">Choose your {{ option.name | downcase }}</option>
+                            {%- for value in option.values -%}
+                              <option value="{{ value | escape }}">{{ value | escape }}</option>
+                            {%- endfor -%}
+                          </select>
+                          <svg class="tv__size-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </div>
+                      {%- endif -%}
+                    </div>
+                  {%- endunless -%}
+                {%- endfor -%}
+              </div>
+            {%- endunless -%}
 
             <button class="tv__popup-addtocart" type="button" data-product-id="{{ product.id }}">
               <span>ADD TO CART</span>
@@ -447,6 +473,14 @@
                 <path d="M3 9H15M15 9L10 4M15 9L10 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
+
+            {%- comment -%} Variant data for JS matching {%- endcomment -%}
+            <script type="application/json" data-variant-data>
+              {
+                "variants": {{ product.variants | json }},
+                "options": {{ product.options | json }}
+              }
+            </script>
           </template>
 
         {%- else -%}
@@ -512,9 +546,22 @@
     var clone = template.content.cloneNode(true);
     contentArea.appendChild(clone);
 
+    /* Wire color buttons */
+    var colorBtns = contentArea.querySelectorAll('.tv__color-btn');
+    colorBtns.forEach(function(cbtn) {
+      cbtn.addEventListener('click', function() {
+        var parent = cbtn.closest('.tv__color-options');
+        parent.querySelectorAll('.tv__color-btn').forEach(function(b) {
+          b.classList.remove('is-selected');
+        });
+        cbtn.classList.add('is-selected');
+      });
+    });
+
+    /* Wire add to cart */
     var atcBtn = contentArea.querySelector('.tv__popup-addtocart');
     if (atcBtn) {
-      atcBtn.addEventListener('click', function (e) {
+      atcBtn.addEventListener('click', function(e) {
         e.preventDefault();
         addToCart(atcBtn);
       });
@@ -530,50 +577,81 @@
     btn.disabled = true;
     btn.innerHTML = '<span>Adding…</span>';
 
-    var form = contentArea.querySelector('form[action*="/cart/add"]');
-    var variantId = null;
-    var payload = { quantity: 1 };
-
-    if (form) {
-      var formData = new FormData(form);
-      var id = formData.get('id');
-      if (id) {
-        variantId = id;
-        payload.id = id;
+    var jsonScript = contentArea.querySelector('script[data-variant-data]');
+    var productData = { variants: [], options: [] };
+    if (jsonScript) {
+      try {
+        productData = JSON.parse(jsonScript.textContent);
+      } catch(e) {
+        console.error('Variant JSON parse error', e);
       }
     }
 
-    if (!variantId) {
-      var idInput = contentArea.querySelector('input[name="id"]');
-      var idSelect = contentArea.querySelector('select[name="id"]');
-      if (idInput) variantId = idInput.value;
-      else if (idSelect) variantId = idSelect.value;
-    }
+    var rows = contentArea.querySelectorAll('.tv__variant-row');
+    var selectedValues = [];
+    var missing = false;
 
-    if (!variantId) {
+    rows.forEach(function(row) {
+      var selectedBtn = row.querySelector('.tv__color-btn.is-selected');
+      var selectedValue = '';
+      if (selectedBtn) {
+        selectedValue = selectedBtn.dataset.value;
+      } else {
+        var select = row.querySelector('.tv__size-select');
+        if (select) selectedValue = select.value;
+      }
+      if (!selectedValue) missing = true;
+      selectedValues.push(selectedValue);
+    });
+
+    if (missing) {
       errorDiv.textContent = 'Please select all options before adding to cart.';
       resetButton(btn);
       return;
     }
 
-    payload.id = variantId;
+    var variant = null;
+    if (productData.variants.length === 1) {
+      variant = productData.variants[0];
+    } else {
+      for (var i = 0; i < productData.variants.length; i++) {
+        var v = productData.variants[i];
+        var match = true;
+        for (var j = 0; j < selectedValues.length; j++) {
+          if (v['option' + (j + 1)] !== selectedValues[j]) {
+            match = false;
+            break;
+          }
+        }
+        if (match) {
+          variant = v;
+          break;
+        }
+      }
+    }
+
+    if (!variant) {
+      errorDiv.textContent = 'Selected combination is not available.';
+      resetButton(btn);
+      return;
+    }
 
     fetch('/cart/add.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ id: variant.id, quantity: 1 })
     })
-    .then(function (res) {
+    .then(function(res) {
       if (!res.ok) throw new Error('Add to cart failed');
       return res.json();
     })
-    .then(function () {
+    .then(function() {
       btn.innerHTML = '<span>ADDED!</span>';
-      setTimeout(function () {
+      setTimeout(function() {
         closePopup();
       }, 800);
     })
-    .catch(function (err) {
+    .catch(function(err) {
       console.error(err);
       errorDiv.textContent = 'Could not add to cart. Please try again.';
       resetButton(btn);
@@ -587,8 +665,8 @@
     errorDiv.textContent = '';
   }
 
-  section.querySelectorAll('.tv__plus').forEach(function (btn) {
-    btn.addEventListener('click', function (e) {
+  section.querySelectorAll('.tv__plus').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
       openPopup(btn);
@@ -596,10 +674,10 @@
   });
 
   closeBtn.addEventListener('click', closePopup);
-  overlay.addEventListener('click', function (e) {
+  overlay.addEventListener('click', function(e) {
     if (e.target === overlay) closePopup();
   });
-  document.addEventListener('keydown', function (e) {
+  document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && !overlay.hasAttribute('hidden')) closePopup();
   });
 })();
