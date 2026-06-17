@@ -199,13 +199,13 @@
     font-weight: 400;
   }
 
-  /* ── Color toggle buttons: 50 / 50 split ── */
+  /* ── Color toggle buttons: exact 50 / 50 ── */
   #tisso-popup-{{ section.id }} .tv__color-options {
     display: flex;
     width: 100%;
   }
   #tisso-popup-{{ section.id }} .tv__color-btn {
-    flex: 1 1 0;               /* equal width, regardless of text length */
+    flex: 1 1 0%;
     height: 42px;
     border: 1px solid #e0e0e0;
     background: #ffffff;
@@ -213,21 +213,23 @@
     font-size: 14px;
     font-family: inherit;
     cursor: pointer;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
     position: relative;
-    margin: 0 0 0 -1px;        /* overlap borders so shared line is 1 px */
+    margin: 0;
     border-radius: 0;
     padding: 0 8px;
     box-sizing: border-box;
+    text-align: center;
+    white-space: nowrap;
   }
-  #tisso-popup-{{ section.id }} .tv__color-btn:first-child {
-    margin-left: 0;
+  #tisso-popup-{{ section.id }} .tv__color-btn + .tv__color-btn {
+    margin-left: -1px;   /* collapse shared border */
   }
   #tisso-popup-{{ section.id }} .tv__color-btn.is-selected {
-    background: #111111;       /* black fill on select */
+    background: #111111;
     color: #ffffff;
     border-color: #111111;
     z-index: 2;
@@ -436,12 +438,19 @@
 
                       {%- assign opt_name_down = option.name | downcase -%}
                       {%- if opt_name_down contains 'color' or opt_name_down contains 'colour' -%}
+
                         {%- comment -%} COLOR: 50 / 50 toggle buttons {%- endcomment -%}
                         <div class="tv__color-options">
                           {%- for value in option.values -%}
+                            {%- liquid
+                              assign btn_classes = 'tv__color-btn'
+                              if forloop.first
+                                assign btn_classes = btn_classes | append: ' is-selected'
+                              endif
+                            -%}
                             <button
                               type="button"
-                              class="tv__color-btn {%- if forloop.first -%} is-selected{%- endif -%}"
+                              class="{{ btn_classes }}"
                               data-value="{{ value | escape }}"
                               aria-label="{{ option.name | escape }}: {{ value | escape }}"
                             >
@@ -449,7 +458,9 @@
                             </button>
                           {%- endfor -%}
                         </div>
+
                       {%- else -%}
+
                         {%- comment -%} SIZE / OTHER: dropdown {%- endcomment -%}
                         <div class="tv__size-select-wrap">
                           <select class="tv__size-select" data-option-name="{{ option.name | escape }}">
@@ -462,6 +473,7 @@
                             <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                           </svg>
                         </div>
+
                       {%- endif -%}
                     </div>
                   {%- endunless -%}
