@@ -1,15 +1,3 @@
-
-
-{% if section.blocks.size > 1 %}
-  <script
-    src="{{ 'announcement-bar.js' | asset_url }}"
-    type="module"
-    fetchpriority="low"
-  ></script>
-{% endif %}
-
-{% render 'contrast-override', background_color: section.settings.background_color, section_id: section.id %}
-
 <style>
   #tisso-topbar-{{ section.id }} {
     background: {{ section.settings.bg_color }};
@@ -27,7 +15,6 @@
     gap: 16px;
   }
 
-  /* LEFT — Logo text */
   #tisso-topbar-{{ section.id }} .tb__logo {
     font-size: {{ section.settings.logo_size }}px;
     font-weight: 700;
@@ -40,7 +27,6 @@
     font-family: inherit;
   }
 
-  /* CENTER — Message */
   #tisso-topbar-{{ section.id }} .tb__message {
     font-size: {{ section.settings.message_size }}px;
     font-weight: 400;
@@ -52,7 +38,6 @@
     font-family: inherit;
   }
 
-  /* RIGHT — CTA Button */
   #tisso-topbar-{{ section.id }} .tb__btn {
     display: inline-flex;
     align-items: center;
@@ -85,7 +70,6 @@
     flex-shrink: 0;
   }
 
-  /* ── Mobile ── */
   @media screen and (max-width: 749px) {
     #tisso-topbar-{{ section.id }} .tb__inner {
       flex-wrap: wrap;
@@ -94,13 +78,11 @@
       padding-bottom: 12px;
       gap: 10px;
     }
-
     #tisso-topbar-{{ section.id }} .tb__logo,
     #tisso-topbar-{{ section.id }} .tb__message {
       flex: 1 1 100%;
       text-align: center;
     }
-
     #tisso-topbar-{{ section.id }} .tb__btn {
       width: 100%;
       justify-content: center;
@@ -119,8 +101,8 @@
       <p class="tb__message">{{ section.settings.message }}</p>
     {%- endif -%}
 
-    {%- if section.settings.btn_text != blank and section.settings.btn_link != blank -%}
-      <a href="{{ section.settings.btn_link }}" class="tb__btn">
+    {%- if section.settings.btn_text != blank -%}
+      <a href="{{ section.settings.btn_link | default: '#' }}" class="tb__btn">
         <span>{{ section.settings.btn_text }}</span>
         <svg viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M12 1L17 6M17 6L12 11M17 6H1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -132,7 +114,7 @@
 
 {% schema %}
 {
-  "name": "Announcement Bar",
+  "name": "Tisso Top Bar",
   "tag": "section",
   "class": "section",
   "enabled_on": {
@@ -251,7 +233,7 @@
   ],
   "presets": [
     {
-      "name": "Announcement Bar"
+      "name": "Tisso Top Bar"
     }
   ]
 }
