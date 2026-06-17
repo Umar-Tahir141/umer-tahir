@@ -92,6 +92,17 @@
         "padding-block-end": 72
       }
     },
+    "product_grid_section_ac8KD9": {
+      "type": "product-grid-section",
+      "name": "Tisso Vision in the Wild",
+      "settings": {
+        "title": "Tisso vison in the wild",
+        "collection": "",
+        "product_count": 8,
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
     "product_list_fa6P9H": {
       "type": "product-list",
       "blocks": {
@@ -133,7 +144,7 @@
               "type": "_product-list-text",
               "name": "t:names.collection_title",
               "settings": {
-                "text": "<h3>{{ closest.collection.title }}</h3>",
+                "text": "<p>Tisso vison in the wild</p>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
@@ -217,6 +228,7 @@
             "product_title_YXxMTj": {
               "type": "product-title",
               "name": "t:names.product_title",
+              "disabled": true,
               "settings": {
                 "width": "100%",
                 "max_width": "normal",
@@ -242,6 +254,7 @@
             "price_JQzVV4": {
               "type": "price",
               "name": "t:names.product_price",
+              "disabled": true,
               "settings": {
                 "show_sale_price_first": true,
                 "show_installments": false,
@@ -294,6 +307,7 @@
   },
   "order": [
     "hero_jVaWmY",
+    "product_grid_section_ac8KD9",
     "product_list_fa6P9H"
   ]
 }
