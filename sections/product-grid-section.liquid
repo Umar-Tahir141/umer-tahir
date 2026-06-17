@@ -24,7 +24,7 @@
   }
   #tisso-vision-{{ section.id }} .tv__grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 4px;
   }
   #tisso-vision-{{ section.id }} .tv__item {
@@ -175,20 +175,27 @@
     background: #333333;
     color: #ffffff;
   }
-  @media (max-width: 520px) {
-    #tisso-vision-{{ section.id }} .tv__title { font-size: 28px; }
+  @media screen and (max-width: 749px) {
+    #tisso-vision-{{ section.id }} .tv__title {
+      font-size: 24px !important;
+    }
     #tisso-vision-{{ section.id }} .tv__grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 3px;
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 3px !important;
     }
     #tisso-vision-{{ section.id }} .tv__item {
-      aspect-ratio: 1 / 1;
+      aspect-ratio: 170 / 186 !important;
     }
     #tisso-vision-{{ section.id }} .tv__plus {
-      width: 24px;
-      height: 24px;
-      bottom: 8px;
-      right: 8px;
+      width: 22px !important;
+      height: 22px !important;
+      bottom: 6px !important;
+      right: 6px !important;
+    }
+    #tisso-vision-{{ section.id }} .tv__plus svg {
+      width: 10px !important;
+      height: 10px !important;
     }
   }
 </style>
