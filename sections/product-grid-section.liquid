@@ -7,14 +7,12 @@
     padding-top: {{ section.settings.padding_top }}px;
     padding-bottom: {{ section.settings.padding_bottom }}px;
   }
-
   #tisso-vision-{{ section.id }} .tv__wrapper {
     max-width: var(--page-width, 1200px);
     margin: 0 auto;
     padding: 0 20px;
     box-sizing: border-box;
   }
-
   #tisso-vision-{{ section.id }} .tv__title {
     font-family: 'Lustria', serif;
     font-weight: 400;
@@ -24,26 +22,25 @@
     margin: 0 0 20px 0;
     color: currentColor;
   }
-
   #tisso-vision-{{ section.id }} .tv__grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 4px;
   }
-
   #tisso-vision-{{ section.id }} .tv__item {
     position: relative;
     overflow: hidden;
     aspect-ratio: 433 / 444;
     background: #e5e0d8;
+    display: block;
   }
-
   #tisso-vision-{{ section.id }} .tv__item a {
     display: block;
     width: 100%;
     height: 100%;
+    position: absolute;
+    top: 0; left: 0;
   }
-
   #tisso-vision-{{ section.id }} .tv__item img {
     width: 100%;
     height: 100%;
@@ -51,17 +48,9 @@
     display: block;
     transition: transform 0.4s ease;
   }
-
   #tisso-vision-{{ section.id }} .tv__item:hover img {
     transform: scale(1.04);
   }
-
-  #tisso-vision-{{ section.id }} .tv__item svg.placeholder-svg {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-
   #tisso-vision-{{ section.id }} .tv__plus {
     position: absolute;
     bottom: 14px;
@@ -77,16 +66,13 @@
     cursor: pointer;
     color: #111111;
     padding: 0;
-    z-index: 2;
+    z-index: 3;
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     transition: transform 0.2s ease;
   }
-
   #tisso-vision-{{ section.id }} .tv__plus:hover {
     transform: scale(1.15);
   }
-
-  /* Popup */
   #tisso-popup-{{ section.id }} {
     position: fixed;
     inset: 0;
@@ -98,11 +84,9 @@
     padding: 20px;
     box-sizing: border-box;
   }
-
   #tisso-popup-{{ section.id }}[hidden] {
     display: none;
   }
-
   #tisso-popup-{{ section.id }} .tv__popup {
     background: #ffffff;
     border-radius: 12px;
@@ -112,12 +96,10 @@
     overflow: hidden;
     animation: tvssFadeUp 0.22s ease;
   }
-
   @keyframes tvssFadeUp {
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-
   #tisso-popup-{{ section.id }} .tv__popup-close {
     position: absolute;
     top: 10px;
@@ -134,25 +116,21 @@
     color: #111;
     z-index: 3;
   }
-
   #tisso-popup-{{ section.id }} .tv__popup-img-wrap {
     width: 100%;
     aspect-ratio: 1 / 1;
     background: #e5e0d8;
     overflow: hidden;
   }
-
   #tisso-popup-{{ section.id }} .tv__popup-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
   }
-
   #tisso-popup-{{ section.id }} .tv__popup-body {
     padding: 16px 20px 20px;
   }
-
   #tisso-popup-{{ section.id }} .tv__popup-title {
     font-size: 16px;
     font-weight: 500;
@@ -160,30 +138,25 @@
     color: #111111;
     line-height: 1.3;
   }
-
   #tisso-popup-{{ section.id }} .tv__popup-prices {
     display: flex;
     align-items: baseline;
     gap: 8px;
     margin-bottom: 16px;
   }
-
   #tisso-popup-{{ section.id }} .tv__popup-price {
     font-size: 15px;
     font-weight: 600;
     color: #111111;
   }
-
   #tisso-popup-{{ section.id }} .tv__popup-compare {
     font-size: 13px;
     color: #999999;
     text-decoration: line-through;
   }
-
   #tisso-popup-{{ section.id }} .tv__popup-compare:empty {
     display: none;
   }
-
   #tisso-popup-{{ section.id }} .tv__popup-btn {
     display: block;
     width: 100%;
@@ -198,39 +171,32 @@
     box-sizing: border-box;
     transition: background 0.2s;
   }
-
   #tisso-popup-{{ section.id }} .tv__popup-btn:hover {
     background: #333333;
     color: #ffffff;
   }
-
   @media (max-width: 520px) {
-    #tisso-vision-{{ section.id }} .tv__title {
-      font-size: 28px;
-    }
-
+    #tisso-vision-{{ section.id }} .tv__title { font-size: 28px; }
     #tisso-vision-{{ section.id }} .tv__grid {
       grid-template-columns: repeat(2, 1fr);
       gap: 3px;
     }
-
     #tisso-vision-{{ section.id }} .tv__item {
       aspect-ratio: 170 / 186;
     }
-
     #tisso-vision-{{ section.id }} .tv__plus {
       width: 24px;
       height: 24px;
       bottom: 8px;
       right: 8px;
     }
-
-    #tisso-vision-{{ section.id }} .tv__plus svg {
-      width: 10px;
-      height: 10px;
-    }
   }
 </style>
+
+{%- liquid
+  assign tv_collection = section.settings.collection
+  assign tv_count = section.settings.product_count
+-%}
 
 <section id="tisso-vision-{{ section.id }}">
   <div class="tv__wrapper">
@@ -240,30 +206,37 @@
     {%- endif -%}
 
     <div class="tv__grid">
-      {%- assign collection = section.settings.collection -%}
-      {%- if collection != blank and collection.products_count > 0 -%}
-        {%- for product in collection.products limit: section.settings.product_count -%}
+
+      {%- if tv_collection != blank -%}
+        {%- for product in tv_collection.products limit: tv_count -%}
+
+          {%- assign p_img = product.featured_image -%}
+          {%- assign p_img_url = '' -%}
+          {%- if p_img != blank -%}
+            {%- assign p_img_url = p_img | image_url: width: 900 -%}
+            {%- assign p_img_url_sm = p_img | image_url: width: 400 -%}
+            {%- assign p_img_url_md = p_img | image_url: width: 600 -%}
+          {%- endif -%}
+
+          {%- assign p_compare = '' -%}
+          {%- if product.compare_at_price > product.price -%}
+            {%- assign p_compare = product.compare_at_price | money -%}
+          {%- endif -%}
+
           <div class="tv__item">
-            <a href="{{ product.url }}" aria-label="{{ product.title | escape }}">
-              {%- if product.featured_image != blank -%}
-                <img
-                 src="{{ product.featured_image | img_url: 'master' }}"
-srcset="
-  {{ product.featured_image | img_url: '400x' }} 400w,
-  {{ product.featured_image | img_url: '600x' }} 600w,
-  {{ product.featured_image | img_url: '900x' }} 900w
-"
-                  "
-                  sizes="(max-width: 520px) 50vw, 25vw"
-                  alt="{{ product.featured_image.alt | default: product.title | escape }}"
-                  width="{{ product.featured_image.width }}"
-                  height="{{ product.featured_image.height }}"
-                  loading="lazy"
-                >
-              {%- else -%}
-                {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
-              {%- endif -%}
-            </a>
+            {%- if p_img != blank -%}
+              <img
+                src="{{ p_img_url }}"
+                srcset="{{ p_img_url_sm }} 400w, {{ p_img_url_md }} 600w, {{ p_img_url }} 900w"
+                sizes="(max-width: 520px) 50vw, 25vw"
+                alt="{{ p_img.alt | default: product.title | escape }}"
+                width="{{ p_img.width }}"
+                height="{{ p_img.height }}"
+                loading="lazy"
+              >
+            {%- endif -%}
+
+            <a href="{{ product.url }}" aria-label="{{ product.title | escape }}"></a>
 
             <button
               class="tv__plus"
@@ -271,10 +244,10 @@ srcset="
               aria-label="Quick view {{ product.title | escape }}"
               data-title="{{ product.title | escape }}"
               data-price="{{ product.price | money }}"
-              data-compare="{%- if product.compare_at_price > product.price -%}{{ product.compare_at_price | money }}{%- endif -%}"
+              data-compare="{{ p_compare }}"
               data-url="{{ product.url }}"
-              data-img="{%- if product.featured_image != blank -%}{{ product.featured_image | image_url: width: 400 }}{%- endif -%}"
-              data-img-alt="{{ product.featured_image.alt | default: product.title | escape }}"
+              data-img="{{ p_img_url_sm }}"
+              data-img-alt="{{ p_img.alt | default: product.title | escape }}"
             >
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <line x1="6" y1="0.5" x2="6" y2="11.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
@@ -282,26 +255,19 @@ srcset="
               </svg>
             </button>
           </div>
-        {%- endfor -%}
-      {%- else -%}
-        {%- for i in (1..section.settings.product_count) -%}
-          <div class="tv__item">
-            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
-            <button class="tv__plus" type="button" aria-hidden="true" disabled>
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <line x1="6" y1="0.5" x2="6" y2="11.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                <line x1="0.5" y1="6" x2="11.5" y2="6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              </svg>
-            </button>
-          </div>
-        {%- endfor -%}
-      {%- endif -%}
-    </div>
 
+        {%- else -%}
+          <p style="padding:20px;color:#999;">No products found in this collection.</p>
+        {%- endfor -%}
+
+      {%- else -%}
+        <p style="padding:20px;color:#999;">Please select a collection in the theme editor.</p>
+      {%- endif -%}
+
+    </div>
   </div>
 </section>
 
-<!-- Popup Modal -->
 <div id="tisso-popup-{{ section.id }}" role="dialog" aria-modal="true" aria-label="Product quick view" hidden>
   <div class="tv__popup">
     <button class="tv__popup-close" type="button" aria-label="Close">
@@ -326,9 +292,9 @@ srcset="
 
 <script>
 (function () {
-  var sectionId = '{{ section.id }}';
-  var section   = document.getElementById('tisso-vision-' + sectionId);
-  var overlay   = document.getElementById('tisso-popup-' + sectionId);
+  var sid     = '{{ section.id }}';
+  var section = document.getElementById('tisso-vision-' + sid);
+  var overlay = document.getElementById('tisso-popup-' + sid);
   if (!section || !overlay) return;
 
   var popupImg     = overlay.querySelector('.tv__popup-img');
@@ -343,15 +309,13 @@ srcset="
     popupPrice.textContent   = btn.dataset.price || '';
     popupCompare.textContent = btn.dataset.compare || '';
     popupLink.href           = btn.dataset.url || '#';
-
     if (btn.dataset.img) {
-      popupImg.src            = btn.dataset.img;
-      popupImg.alt            = btn.dataset.imgAlt || '';
-      popupImg.style.display  = 'block';
+      popupImg.src           = btn.dataset.img;
+      popupImg.alt           = btn.dataset.imgAlt || '';
+      popupImg.style.display = 'block';
     } else {
       popupImg.style.display = 'none';
     }
-
     overlay.removeAttribute('hidden');
     document.body.style.overflow = 'hidden';
     closeBtn.focus();
@@ -365,16 +329,15 @@ srcset="
   section.querySelectorAll('.tv__plus').forEach(function (btn) {
     btn.addEventListener('click', function (e) {
       e.preventDefault();
+      e.stopPropagation();
       openPopup(btn);
     });
   });
 
   closeBtn.addEventListener('click', closePopup);
-
   overlay.addEventListener('click', function (e) {
     if (e.target === overlay) closePopup();
   });
-
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && !overlay.hasAttribute('hidden')) closePopup();
   });
