@@ -73,107 +73,209 @@
   #tisso-vision-{{ section.id }} .tv__plus:hover {
     transform: scale(1.15);
   }
+  /* ── Popup Overlay ── */
   #tisso-popup-{{ section.id }} {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 9999;
+    background: rgba(0,0,0,0.45);
+    z-index: 99999;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 16px;
     box-sizing: border-box;
   }
   #tisso-popup-{{ section.id }}[hidden] {
     display: none;
   }
-  #tisso-popup-{{ section.id }} .tv__popup {
-    background: #ffffff;
-    border-radius: 12px;
-    width: 100%;
-    max-width: 360px;
-    position: relative;
-    overflow: hidden;
-    animation: tvssFadeUp 0.22s ease;
-  }
   @keyframes tvssFadeUp {
-    from { opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: translateY(0); }
   }
+
+  /* ── Popup Box ── */
+  #tisso-popup-{{ section.id }} .tv__popup {
+    background: #ffffff;
+    border-radius: 0;
+    width: 100%;
+    max-width: 320px;
+    position: relative;
+    animation: tvssFadeUp 0.2s ease;
+    box-sizing: border-box;
+    padding: 20px;
+  }
+
+  /* ── Close Button ── */
   #tisso-popup-{{ section.id }} .tv__popup-close {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(255,255,255,0.9);
+    top: 14px;
+    right: 14px;
+    background: none;
     border: none;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     cursor: pointer;
     color: #111;
-    z-index: 3;
+    padding: 0;
+    line-height: 1;
+    z-index: 4;
   }
+
+  /* ── Top Row: image + info ── */
+  #tisso-popup-{{ section.id }} .tv__popup-top {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  /* ── Image ── */
   #tisso-popup-{{ section.id }} .tv__popup-img-wrap {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background: #e5e0d8;
+    flex-shrink: 0;
+    width: 120px;
+    height: 140px;
     overflow: hidden;
+    background: #e5e0d8;
   }
   #tisso-popup-{{ section.id }} .tv__popup-img {
-    width: 100%;
-    height: 100%;
+    width: 120px;
+    height: 140px;
     object-fit: cover;
     display: block;
   }
-  #tisso-popup-{{ section.id }} .tv__popup-body {
-    padding: 16px 20px 20px;
+
+  /* ── Info (right of image) ── */
+  #tisso-popup-{{ section.id }} .tv__popup-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-right: 20px;
   }
   #tisso-popup-{{ section.id }} .tv__popup-title {
-    font-size: 16px;
-    font-weight: 500;
-    margin: 0 0 6px 0;
+    font-size: 15px;
+    font-weight: 400;
+    margin: 0 0 8px 0;
     color: #111111;
     line-height: 1.3;
-  }
-  #tisso-popup-{{ section.id }} .tv__popup-prices {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    margin-bottom: 16px;
+    letter-spacing: 0;
   }
   #tisso-popup-{{ section.id }} .tv__popup-price {
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 400;
     color: #111111;
+    margin: 0 0 10px 0;
+    display: block;
   }
   #tisso-popup-{{ section.id }} .tv__popup-compare {
     font-size: 13px;
     color: #999999;
     text-decoration: line-through;
+    margin-left: 6px;
   }
   #tisso-popup-{{ section.id }} .tv__popup-compare:empty {
     display: none;
   }
-  #tisso-popup-{{ section.id }} .tv__popup-btn {
+  #tisso-popup-{{ section.id }} .tv__popup-desc {
+    font-size: 12px;
+    color: #444444;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* ── Divider ── */
+  #tisso-popup-{{ section.id }} .tv__popup-divider {
+    border: none;
+    border-top: 1px solid #e8e8e8;
+    margin: 0 0 16px 0;
+  }
+
+  /* ── Section Label ── */
+  #tisso-popup-{{ section.id }} .tv__popup-label {
+    font-size: 13px;
+    font-weight: 400;
+    color: #111111;
+    margin: 0 0 8px 0;
     display: block;
+  }
+
+  /* ── Color Swatches ── */
+  #tisso-popup-{{ section.id }} .tv__popup-colors {
+    display: flex;
+    gap: 0;
+    margin-bottom: 16px;
+    border: 1px solid #cccccc;
+  }
+  #tisso-popup-{{ section.id }} .tv__color-btn {
+    flex: 1;
+    padding: 10px 12px;
+    background: #ffffff;
+    border: none;
+    border-right: 1px solid #cccccc;
+    font-size: 13px;
+    color: #111111;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.15s;
+    letter-spacing: 0.02em;
+  }
+  #tisso-popup-{{ section.id }} .tv__color-btn:last-child {
+    border-right: none;
+  }
+  #tisso-popup-{{ section.id }} .tv__color-btn.active,
+  #tisso-popup-{{ section.id }} .tv__color-btn:hover {
+    background: #f0f0f0;
+  }
+
+  /* ── Size Dropdown ── */
+  #tisso-popup-{{ section.id }} .tv__popup-size-wrap {
+    margin-bottom: 20px;
+    position: relative;
+  }
+  #tisso-popup-{{ section.id }} .tv__size-select {
     width: 100%;
-    padding: 12px 16px;
+    padding: 10px 40px 10px 12px;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+    font-size: 13px;
+    color: #111111;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    border-radius: 0;
+    box-sizing: border-box;
+    letter-spacing: 0.02em;
+  }
+  #tisso-popup-{{ section.id }} .tv__size-chevron {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #111;
+  }
+
+  /* ── Add to Cart Button ── */
+  #tisso-popup-{{ section.id }} .tv__popup-atc {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+    padding: 14px 20px;
     background: #111111;
     color: #ffffff;
-    text-align: center;
-    text-decoration: none;
-    font-size: 14px;
+    border: none;
+    font-size: 12px;
     font-weight: 500;
-    border-radius: 6px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
     box-sizing: border-box;
     transition: background 0.2s;
   }
-  #tisso-popup-{{ section.id }} .tv__popup-btn:hover {
+  #tisso-popup-{{ section.id }} .tv__popup-atc:hover {
     background: #333333;
-    color: #ffffff;
+  }
+  #tisso-popup-{{ section.id }} .tv__popup-atc svg {
+    flex-shrink: 0;
   }
   @media screen and (max-width: 749px) {
     #tisso-vision-{{ section.id }} .tv__title {
@@ -277,23 +379,53 @@
 
 <div id="tisso-popup-{{ section.id }}" role="dialog" aria-modal="true" aria-label="Product quick view" hidden>
   <div class="tv__popup">
+
+    <!-- Close -->
     <button class="tv__popup-close" type="button" aria-label="Close">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <line x1="1" y1="1" x2="13" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <line x1="13" y1="1" x2="1" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <line x1="1" y1="1" x2="13" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="13" y1="1" x2="1" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
     </button>
-    <div class="tv__popup-img-wrap">
-      <img class="tv__popup-img" src="" alt="" width="400" height="400">
-    </div>
-    <div class="tv__popup-body">
-      <p class="tv__popup-title"></p>
-      <div class="tv__popup-prices">
-        <span class="tv__popup-price"></span>
-        <s class="tv__popup-compare"></s>
+
+    <!-- Top row: image + info -->
+    <div class="tv__popup-top">
+      <div class="tv__popup-img-wrap">
+        <img class="tv__popup-img" src="" alt="" width="120" height="140">
       </div>
-      <a class="tv__popup-btn" href="#">View Product</a>
+      <div class="tv__popup-info">
+        <p class="tv__popup-title"></p>
+        <span class="tv__popup-price"></span>
+        <p class="tv__popup-desc"></p>
+      </div>
     </div>
+
+    <hr class="tv__popup-divider">
+
+    <!-- Color -->
+    <span class="tv__popup-label">Color</span>
+    <div class="tv__popup-colors" id="tvColorBtns-{{ section.id }}"></div>
+
+    <!-- Size -->
+    <span class="tv__popup-label">Size</span>
+    <div class="tv__popup-size-wrap">
+      <select class="tv__size-select" id="tvSizeSelect-{{ section.id }}">
+        <option value="">Choose your size</option>
+      </select>
+      <svg class="tv__size-chevron" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <polyline points="2,5 7,10 12,5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+    </div>
+
+    <!-- Add to Cart -->
+    <button class="tv__popup-atc" id="tvAtcBtn-{{ section.id }}" type="button">
+      ADD TO CART
+      <svg width="20" height="12" viewBox="0 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <line x1="0" y1="6" x2="18" y2="6" stroke="white" stroke-width="1.5"/>
+        <polyline points="13,1 19,6 13,11" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+    </button>
+
   </div>
 </div>
 
